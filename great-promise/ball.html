@@ -20,6 +20,8 @@
 				background: green;
 			}
 		</style>
+		<script type="text/javascript" src="./node_modules/bluebird/js/browser/
+		bluebird.js"></script>
 	</head>
 	<body>
 		<div class="ball ball1" style="margin-left: 0;"></div>
@@ -30,7 +32,7 @@
 			const ball2 = document.querySelector('.ball2');
 			const ball3 = document.querySelector('.ball3');
 
-			function animation(ball, distance, cb){
+			function _animate(ball, distance, cb){
 				setTimeout(function(){
 					var marginLeft = parseInt(ball.style.marginLeft, 10);
 					console.log(marginLeft);
@@ -45,23 +47,69 @@
 
 						ball.style.marginLeft = marginLeft + 'px';
 						console.log(ball.style.marginLeft);
-						animation(ball, distance, cb);
+						animate(ball, distance, cb);
 					}
 				}, 13);
 			};
-			animation(ball1, 100, function(){
-				animation(ball2, 200, () => {
-					animation(ball3, 300, () => {
-						animation(ball3, 150, () => {
-							animation(ball2, 150, () => {
-								animation(ball1, 150, () => {
-									//
-								});
-							});
-						});
-					});
+			// 1.0 animate
+			// animate(ball1, 100, function(){
+			// 	animate(ball2, 200, () => {
+			// 		animate(ball3, 300, () => {
+			// 			animate(ball3, 150, () => {
+			// 				animate(ball2, 150, () => {
+			// 					animate(ball1, 150, () => {
+			// 						//
+			// 					});
+			// 				});
+			// 			});
+			// 		});
+			// 	});
+			// });
+			const Promise = window.Promise;
+			function promiseAnimate(ball, distance){
+				return new Promise((resolve, reject) => {
+					function _animate(){
+						setTimeout(function(){
+							var marginLeft = parseInt(ball.style.marginLeft, 10);
+							console.log(marginLeft);
+							if(marginLeft === distance){
+								// cb&&cb();
+								resolve();
+							}else{
+								if(marginLeft<distance){
+									marginLeft++;
+								}else{
+									marginLeft--;
+								}
+
+								ball.style.marginLeft = marginLeft + 'px';
+								console.log(ball.style.marginLeft);
+								// animate(ball, distance, cb);
+								_animate();
+							}
+						}, 13);
+					};
+					_animate();
 				});
-			});
+			}
+
+			promiseAnimate(ball1, 100)
+				.then( () => {
+					return promiseAnimate(ball2, 200);
+				})
+				.then( () => {
+					return promiseAnimate(ball3, 300);
+				})
+				.then( () => {
+					return promiseAnimate(ball3, 150);
+				})
+				.then( () => {
+					return promiseAnimate(ball2, 150);
+				})
+				.then( () =>  {
+					return promiseAnimate(ball1, 150);
+				});
+
 		</script>
 	</body>
 	</html>
