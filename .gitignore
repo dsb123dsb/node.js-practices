@@ -1,1 +1,3 @@
-http-imooc-crawler/node_modules/
+/http-imooc-crawler/node_modules/
+
+/buffer-stream/node_modules/
