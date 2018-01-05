@@ -6,11 +6,12 @@ var server=net.createServer(function(socket){
 		socket.write("你好！");
 		/* Act on the event */
 	});
-		socket.on('end', function(data) {
-		console.log("断开链接");
-		/* Act on the event */
+	socket.on('end', function(data) {
+	console.log("断开链接");
+	/* Act on the event */
 	});
-		socket.write("欢迎光临《深入浅出node.js》 示例：\n");
+	socket.write("欢迎光临《深入浅出node.js》 示例：\n");
+	// socket.pipe(socket);// echo服务器 data传回
 });
 server.listen(8124,  function() {
   console.log("server bound");
