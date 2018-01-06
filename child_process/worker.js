@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const http = require('http');
 let port = Math.round((1+Math.random())*1000);
 http.createServer((req, res)=>{
