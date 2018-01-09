@@ -2,6 +2,8 @@ let http = require('http');
 let server = http.createServer((req,res)=>{ // 转化http层
 	res.writeHead(200, {'Content-type': 'text/plain'});
 	res.end('handled by child, pid is ' + process.pid+'\n');
+	// 测试访问报错终止进程重启
+	throw new Error('throw exception');
 });
 let worker;
 process.on('message',(m,tcp)=>{
@@ -16,8 +18,9 @@ process.on('message',(m,tcp)=>{
 		});
 	}
 });
-process.on('uncaughtException', ()=>{
+process.on('uncaughtException', (err)=>{
 	//停止接收新的连接
+	process.send({act:'suicide'}); // 发送自杀信号
 	worker.close(()=>{
 		//断开所有连接
 		process.exit(1);

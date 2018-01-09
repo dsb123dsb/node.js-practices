@@ -14,11 +14,17 @@ server.listen(1337, ()=>{
 let workers = {}; // 存放进程
 let createWorker = ()=>{
 	let worker = fork(__dirname+'/IPC_worker.js');
+	worker.on('message',(message)=>{
+		// console.log(message)
+		if(message.act==='suicide'){
+			createWorker();
+		}
+	});
 	// 退出时重启新的进程
 	worker.on('exit', ()=>{
 		console.log('Worker '+ worker.pid + ' exited');
 		delete workers[worker.pid];
-		createWorker();
+		// createWorker();
 	});
 	// 句柄转发
 	worker.send('server', server);
