@@ -3,3 +3,4 @@
 3. events 模块、http-request请求回帖
 4. promise-animate、promise重构爬虫
 5. stream-buffer api（pipe和定制）
+6. child_process模块
