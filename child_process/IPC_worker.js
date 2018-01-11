@@ -25,7 +25,12 @@ process.on('uncaughtException', (err)=>{
 		//断开所有连接
 		process.exit(1);
 	});
-})
+	// 长连接可能断开需要较长时间，设置超时退出
+	setTimeout(()=>{
+		process.exit(1);
+	},5000);
+});
+
 // process.on('SIMTERM', ()=>{
 // 	console.log('Got a SIGTERM, exiting...');
 // 	process.exit(1);
