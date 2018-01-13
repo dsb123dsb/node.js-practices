@@ -7,7 +7,7 @@ let server = http.createServer((req,res)=>{ // 转化http层
 });
 let worker;
 process.on('message',(m,tcp)=>{
-	console.log('CHILD got message:',m);
+	// console.log('CHILD got message:',m);
 	if(m='server'){
 		worker=tcp;
 		worker.on('connection', (socket)=>{

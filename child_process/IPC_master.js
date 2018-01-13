@@ -14,20 +14,22 @@ server.listen(1337, ()=>{
 let limit = 10; // 重启次数
 let during = 60000; //时间单位
 let restart = [];
+let length
 let isTooFrequently = ()=>{
 	let time = Date.now(); // 记录重启时间
-	let length = restart.push(time);
+	length = restart.push(time);
 	if(length>limit){
 		restart = restart.slice(limit*-1); // 取出最后是个记录
 	}
 	// 最后一次重启到前十次重启之间的时间间隔
-	return restart.length>=limit&&restart[restart,length-1]-restart[0]<during;
+	return restart.length>=limit&&restart[restart.length-1]-restart[0]<during;
 }
 
 
 // 复制进程并发送句柄,设置自动重启
 let workers = {}; // 存放进程
 let createWorker = ()=>{
+	// console.log(restart+":",isTooFrequently());
 	if(isTooFrequently()){ // 判断是否频繁重启
 		//触发giveup事件
 		process.emit('giveup', length,during);
@@ -61,7 +63,11 @@ process.on('exit', ()=>{
 	for(let pid in workers){
 		workersp[pid].kill()
 	}
-})
+});
+// 监听giveup事件
+process.on('giveup', (m)=>{
+	console.log('Worker create too quick：'+m);
+});
 // n.kill('SIGTERM'); // 杀死子进程
 
 // n.on('message', (m)=>{
